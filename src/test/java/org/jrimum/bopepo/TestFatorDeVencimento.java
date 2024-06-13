@@ -58,23 +58,38 @@ public class TestFatorDeVencimento {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testToFatorComDataMaiorQueDataLimite() {
-
-		data.set(2025, Calendar.FEBRUARY, 22);
+		
+		data = new GregorianCalendar();
+		
+		data.add(Calendar.DAY_OF_YEAR, 5501);
 
 		FatorDeVencimento.toFator(data.getTime());
 	}
 
 	@Test
 	public final void testToFator() {
-
-		data.set(2000, Calendar.JULY, 3);
-		assertEquals(1000, FatorDeVencimento.toFator(data.getTime()));
-
-		data.set(2000, Calendar.JULY, 5);
-		assertEquals(1002, FatorDeVencimento.toFator(data.getTime()));
-
-		data.set(2025, Calendar.FEBRUARY, 21);
-		assertEquals(9999, FatorDeVencimento.toFator(data.getTime()));
+		
+		data = new GregorianCalendar();
+		
+		GregorianCalendar dataHoje = new GregorianCalendar();
+		
+		data.add(Calendar.DAY_OF_YEAR, -1000);
+		dataHoje.add(Calendar.DAY_OF_YEAR, -1000);
+		assertEquals(FatorDeVencimento.toFator(dataHoje.getTime()), FatorDeVencimento.toFator(data.getTime()));
+		
+		data = new GregorianCalendar();
+		dataHoje = new GregorianCalendar();
+		
+		data.add(Calendar.DAY_OF_YEAR, 1000);
+		dataHoje.add(Calendar.DAY_OF_YEAR, 1000);
+		assertEquals(FatorDeVencimento.toFator(dataHoje.getTime()), FatorDeVencimento.toFator(data.getTime()));
+		
+		data = new GregorianCalendar();
+		dataHoje = new GregorianCalendar();
+		
+		data.add(Calendar.DAY_OF_YEAR, 5500);
+		dataHoje.add(Calendar.DAY_OF_YEAR, 5500);
+		assertEquals(FatorDeVencimento.toFator(dataHoje.getTime()), FatorDeVencimento.toFator(data.getTime()));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

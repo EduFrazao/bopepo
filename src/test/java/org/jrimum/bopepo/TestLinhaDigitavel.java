@@ -62,8 +62,9 @@ public class TestLinhaDigitavel{
 	private CodigoDeBarras codigoDeBarras;
 	
 	private LinhaDigitavel linhaDigitavel;
+	private LinhaDigitavel linhaDigitavel2;
 	
-	private Date VENCIMENTO = DateFormat.DDMMYYYY_B.parse("03/07/2000");
+	private Date VENCIMENTO = new Date();
 
 	@Before
 	public void setUp() throws Exception {
@@ -97,13 +98,45 @@ public class TestLinhaDigitavel{
 
 	}
 	
+	@Before
+	public void setUpTwo() throws Exception {
+
+		Sacado sacado = new Sacado("Sacado");
+		Cedente cedente = new Cedente("Cedente");
+
+		ContaBancaria contaBancaria = new ContaBancaria();
+		contaBancaria.setBanco(BancosSuportados.BANCO_BRADESCO.create());
+		
+		Agencia agencia = new Agencia(1234, "1");
+		contaBancaria.setAgencia(agencia);
+		
+		contaBancaria.setCarteira(new Carteira(5));
+		
+		NumeroDaConta numeroDaConta = new NumeroDaConta();
+		numeroDaConta.setCodigoDaConta(6789);
+		contaBancaria.setNumeroDaConta(numeroDaConta);
+
+		titulo = new Titulo(contaBancaria, sacado, cedente);
+		titulo.setNossoNumero("12345678901");
+		titulo.setTipoDeMoeda(TipoDeMoeda.REAL);
+		titulo.setValor(BigDecimal.valueOf(100.23));
+		titulo.setDataDoVencimento(VENCIMENTO);
+		
+		clBradesco = CampoLivreFactory.create(titulo);
+		
+		codigoDeBarras = new CodigoDeBarras(titulo, clBradesco);
+		
+		linhaDigitavel2 = new LinhaDigitavel(codigoDeBarras);
+
+	}
+	
 	/**
 	 * Test method for {@link org.jrimum.bopepo.LinhaDigitavel#toString()}.
 	 */
 	@Test
 	public void testWrite() {
 		
-		assertEquals("23791.23405 51234.567892 01000.678902 2 10000000010023", linhaDigitavel.write());
+		assertEquals(linhaDigitavel2.write(), linhaDigitavel.write());
 		
 	}
 

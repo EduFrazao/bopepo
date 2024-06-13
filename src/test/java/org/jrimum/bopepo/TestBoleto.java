@@ -78,7 +78,7 @@ public class TestBoleto{
 
 	private Titulo titulo;
 	
-	private Date VENCIMENTO = new GregorianCalendar(2000, Calendar.JULY, 3).getTime();
+	private Date VENCIMENTO = new GregorianCalendar().getTime();
 	
 	private Boleto boleto;
 
