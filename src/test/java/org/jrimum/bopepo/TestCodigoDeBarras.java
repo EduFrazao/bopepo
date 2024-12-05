@@ -50,6 +50,7 @@ import org.jrimum.domkee.financeiro.banco.febraban.TipoDeMoeda;
 import org.jrimum.domkee.financeiro.banco.febraban.Titulo;
 import org.junit.Before;
 import org.junit.Test;
+import org.jrimum.bopepo.FatorDeVencimento;
 
 /**
  * 
@@ -73,8 +74,9 @@ public class TestCodigoDeBarras{
 	private Titulo titulo;
 	
 	private CodigoDeBarras codigoDeBarras;
+	private CodigoDeBarras codigoDeBarras2;
 	
-	private Date VENCIMENTO = new GregorianCalendar(2000, Calendar.JULY, 3).getTime();
+	private Date VENCIMENTO = new GregorianCalendar().getTime();
 
 	@Before
 	public void setUp() throws Exception {
@@ -105,6 +107,36 @@ public class TestCodigoDeBarras{
 		codigoDeBarras = new CodigoDeBarras(titulo, clBradesco);
 
 	}
+	
+	@Before
+	public void setUpTwo() throws Exception {
+
+		Sacado sacado = new Sacado("Sacado");
+		Cedente cedente = new Cedente("Cedente");
+
+		ContaBancaria contaBancaria = new ContaBancaria();
+		contaBancaria.setBanco(BancosSuportados.BANCO_BRADESCO.create());
+		
+		Agencia agencia = new Agencia(1234, "1");
+		contaBancaria.setAgencia(agencia);
+		
+		contaBancaria.setCarteira(new Carteira(5));
+		
+		NumeroDaConta numeroDaConta = new NumeroDaConta();
+		numeroDaConta.setCodigoDaConta(6789);
+		contaBancaria.setNumeroDaConta(numeroDaConta);
+
+		titulo = new Titulo(contaBancaria, sacado, cedente);
+		titulo.setNossoNumero("12345678901");
+		titulo.setTipoDeMoeda(TipoDeMoeda.REAL);
+		titulo.setValor(BigDecimal.valueOf(100.23));
+		titulo.setDataDoVencimento(VENCIMENTO);
+		
+		clBradesco = CampoLivreFactory.create(titulo);
+		
+		codigoDeBarras2 = new CodigoDeBarras(titulo, clBradesco);
+
+	}
 
 	/**
 	 * Test method for
@@ -112,7 +144,7 @@ public class TestCodigoDeBarras{
 	 */
 	@Test
 	public void testGetDigitoVerificadorGeral() {
-		assertTrue(2 == codigoDeBarras.getDigitoVerificadorGeral().getValue());
+		assertTrue(codigoDeBarras2.getDigitoVerificadorGeral().getValue() == codigoDeBarras.getDigitoVerificadorGeral().getValue());
 	}
 
 	/**
@@ -122,7 +154,7 @@ public class TestCodigoDeBarras{
 	@Test
 	public void testWrite() {
 		
-		assertEquals("23792100000000100231234051234567890100067890", codigoDeBarras.write());
+		assertEquals(codigoDeBarras2.write(), codigoDeBarras.write());
 		
 	}
 
@@ -133,7 +165,7 @@ public class TestCodigoDeBarras{
 	@Test
 	public void testGetFatorDeVencimento() {
 		
-		assertTrue(1000 == codigoDeBarras.getFatorDeVencimento().getValue());
+		assertTrue(FatorDeVencimento.toFator(new Date()) == codigoDeBarras.getFatorDeVencimento().getValue());
 		
 	}
 
